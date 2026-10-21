@@ -1,0 +1,112 @@
+apiVersion: agent.k8s.elastic.co/v1alpha1
+kind: Agent
+metadata:
+  name: order-platform-agent
+  namespace: observability
+  labels:
+    app.kubernetes.io/name: elastic-agent
+    app.kubernetes.io/component: observability-agent
+    app.kubernetes.io/part-of: k8s-order-platform
+
+spec:
+  version: 9.2.0
+
+  mode: standalone
+
+  elasticsearchRefs:
+    - name: order-platform-es
+      namespace: observability
+
+  daemonSet:
+    podTemplate:
+      metadata:
+        labels:
+          app.kubernetes.io/name: elastic-agent
+          app.kubernetes.io/component: observability-agent
+          app.kubernetes.io/part-of: k8s-order-platform
+
+      spec:
+        serviceAccountName: elastic-agent
+        automountServiceAccountToken: true
+        hostNetwork: true
+
+
+        dnsPolicy: ClusterFirstWithHostNet
+
+        containers:
+          - name: agent
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+              limits:
+                cpu: "1"
+                memory: 512Mi
+
+            securityContext:
+              runAsUser: 0
+
+            volumeMounts:
+              - name: varlogcontainers
+                mountPath: /var/log/containers
+                readOnly: true
+
+              - name: varlogpods
+                mountPath: /var/log/pods
+                readOnly: true
+
+              - name: containerd
+                mountPath: /var/lib/containerd
+                readOnly: true
+
+        volumes:
+          - name: varlogcontainers
+            hostPath:
+              path: /var/log/containers
+
+          - name: varlogpods
+            hostPath:
+              path: /var/log/pods
+
+          - name: containerd
+            hostPath:
+              path: /var/lib/containerd
+
+  config:
+    inputs:
+      - id: kubernetes-container-logs
+        type: filestream
+        use_output: default
+        streams:
+          - id: kubernetes-container-logs-all
+            data_stream:
+              type: logs
+              dataset: kubernetes.container_logs
+            paths:
+              - /var/log/containers/*.log
+            parsers:
+              - container:
+                  format: auto
+                  stream: all
+
+            processors:
+              - add_kubernetes_metadata:
+                  host: ${NODE_NAME}
+                  matchers:
+                    - logs_path:
+                        logs_path: "/var/log/containers/"
+              - decode_json_fields:
+                  when:
+                    equals:
+                      kubernetes.container.name: "order-api"
+                  fields:
+                    - message
+                  target: ""
+                  overwrite_keys: false
+                  add_error_key: false
+
+            prospector:
+              scanner:
+                fingerprint:
+                  enabled: false
+                symlinks: true

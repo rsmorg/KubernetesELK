@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: order-api
+  namespace: application
+  labels:
+    app.kubernetes.io/name: order-api
+    app.kubernetes.io/component: application
+    app.kubernetes.io/part-of: k8s-order-platform
+spec:
+  ingressClassName: traefik
+
+  tls:
+    - hosts:
+        - order-api.k8s.local
+      secretName: order-api-tls
+
+  rules:
+    - host: order-api.k8s.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: order-api
+                port:
+                  name: http

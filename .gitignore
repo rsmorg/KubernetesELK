@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test and coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# Local Kubernetes / generated files
+kubeconfig
+*.kubeconfig
+
+# Certificates and keys
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Local TLS/private keys
+app/k8s/tls/*.key
+app/k8s/tls/*.csr
+app/k8s/tls/*.ext
+
+# Elastic local/generated data
+elastic-data/
+
+
+# Local Kubernetes secrets
+app/k8s/secret.yaml

@@ -1,0 +1,52 @@
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+
+metadata:
+  name: order-platform-kibana
+  namespace: observability
+
+  labels:
+    app.kubernetes.io/name: kibana
+    app.kubernetes.io/component: visualization
+    app.kubernetes.io/part-of: k8s-order-platform
+
+spec:
+  version: 9.2.0
+
+  count: 1
+
+  elasticsearchRef:
+    name: order-platform-es
+
+  podTemplate:
+    metadata:
+      labels:
+        app.kubernetes.io/name: kibana
+        app.kubernetes.io/component: visualization
+
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+
+      containers:
+        - name: kibana
+
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+
+            limits:
+              cpu: "1"
+              memory: 1Gi
+
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+
+            capabilities:
+              drop:
+                - ALL

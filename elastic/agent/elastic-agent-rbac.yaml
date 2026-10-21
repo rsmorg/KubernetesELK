@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: elastic-agent
+  namespace: observability
+  labels:
+    app.kubernetes.io/name: elastic-agent
+    app.kubernetes.io/component: logging
+    app.kubernetes.io/part-of: k8s-order-platform
+automountServiceAccountToken: true
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: elastic-agent
+  labels:
+    app.kubernetes.io/name: elastic-agent
+    app.kubernetes.io/component: logging
+    app.kubernetes.io/part-of: k8s-order-platform
+rules:
+  - apiGroups: [""]
+    resources:
+      - namespaces
+      - pods
+      - nodes
+      - events
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups: ["apps"]
+    resources:
+      - replicasets
+      - deployments
+      - daemonsets
+      - statefulsets
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups: ["batch"]
+    resources:
+      - jobs
+      - cronjobs
+    verbs:
+      - get
+      - list
+      - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: elastic-agent
+  labels:
+    app.kubernetes.io/name: elastic-agent
+    app.kubernetes.io/component: logging
+    app.kubernetes.io/part-of: k8s-order-platform
+subjects:
+  - kind: ServiceAccount
+    name: elastic-agent
+    namespace: observability
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: elastic-agent
