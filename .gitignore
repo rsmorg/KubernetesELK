@@ -40,6 +40,7 @@ kubeconfig
 *.pfx
 
 # Local TLS/private keys
+app/k8s/tls/*
 app/k8s/tls/*.key
 app/k8s/tls/*.csr
 app/k8s/tls/*.crt
