@@ -1,6 +1,6 @@
-# Kubernetes Order Platform POC
+# Kubernetes Elastic Observability Platform for Orders - POC
 
-A local, production-oriented Kubernetes and Elastic Stack proof of concept built to demonstrate practical DevOps and cloud platform engineering skills.
+This is local, production-oriented Kubernetes and Elastic Stack proof of concept built to test various ways to implement K8s and EL. The idea for this POC was born out of the need to build production-like environment in a low to zero cost, on-prem, local set up that eventually be adapted to cloud. 
 
 ## Current Architecture
 
@@ -26,7 +26,7 @@ The platform will host:
 - Structured application logging
 - Kubernetes security fundamentals
 - Observability and incident investigation
-- GitHub-publishable implementation
+- Kibana visualizations and charts 
 - Clear evolution path from local K3s to Azure AKS
 
 ## Initial Version Baseline
@@ -43,6 +43,6 @@ The platform will host:
 
 ## Status
 
-Phase 1: Local Kubernetes platform — complete
+Phase 1: Local Kubernetes & Elastic platform — complete
 
-Phase 2: Elastic Stack foundation — in progress
+Phase 2: Refining and securing the platform - in progress
