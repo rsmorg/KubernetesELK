@@ -42,6 +42,7 @@ kubeconfig
 # Local TLS/private keys
 app/k8s/tls/*.key
 app/k8s/tls/*.csr
+app/k8s/tls/*.crt
 app/k8s/tls/*.ext
 
 # Elastic local/generated data
